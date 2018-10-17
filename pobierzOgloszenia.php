@@ -32,21 +32,33 @@ function pobierzStrone($url) {
         tag             poprostu
         klasa + name    .nazwaklasy[name='nazwa']
 */
-function pobierzDane(){
-	// Wczytanie strony z ktorej bedziemy pobierac dane
-	$url = "https://www.otodom.pl/sprzedaz/dom/?search%5Bfilter_float_price%3Afrom%5D=500000&search%5Bfilter_float_price%3Ato%5D=2000000&search%5Bdescription%5D=1";
-	$html = pobierzStrone($url);
-	$data['nazwa ogloszenia'] = $html->find(".offer-item-title",0)->innertext;
-	$data['liczba pokoi'] = $html->find(".offer-item-rooms",0)->innertext;
-	$data['metraz'] = $html->find(".offer-item-area",0)->innertext;
-	$data['cena'] = $html->find(".offer-item-price",0)->innertext;
-	// Usuniecie spacji z ceny, poniewaz otodom dodaje dziesiatki spacji w cenie ¯\_(ツ)_/¯
-	$data['cena'] = preg_replace('/\s+/', '', $data['cena']);
+function pobierzDane($iloscRekordow){
 
-	return $data;
+$wskaznikStrony = 1;
+//Jest to ilosc stron niezbedna do otworzenia, aby pobrac ilosc rekordow podana przez uzytkownika
+$iloscStron = $iloscRekordow / 26;
+echo ((int)$iloscStron);
+    
+while($iloscStron>=1){
+// Wczytanie strony z ktorej bedziemy pobierac dane
+$html = file_get_html("https://www.otodom.pl/sprzedaz/dom/?page=$wskaznikStrony");
+// Pobranie poszczegolnych danych ze strony
+    for ($i = 0; $i<27; $i++){
+        $data['nazwa ogloszenia'] = $html->find(".offer-item-title",$i)->innertext;
+        $data['liczba pokoi'] = $html->find(".offer-item-rooms",$i)->innertext;
+        $data['metraz'] = $html->find(".offer-item-area",$i)->innertext;
+        $data['cena'] = $html->find(".offer-item-price",$i)->innertext;
+        // Usuniecie spacji z ceny, poniewaz otodom dodaje dziesiatki spacji w cenie ¯\_(ツ)_/¯
+        $data['cena'] = preg_replace('/\s+/', '', $data['cena']);
+        print_r($data);
+    }
+    $iloscStron--;
+    $wskaznikStrony++;
+    
 }
-
-$dane = pobierzDane();
+}
+//Nie wiecej niz 1000 bo otodom blokuje
+pobierzDane(100);
 echo json_encode($dane);
 
 ?>
