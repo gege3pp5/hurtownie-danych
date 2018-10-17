@@ -41,7 +41,8 @@ echo ((int)$iloscStron);
     
 while($iloscStron>=1){
 // Wczytanie strony z ktorej bedziemy pobierac dane
-$html = file_get_html("https://www.otodom.pl/sprzedaz/dom/?page=$wskaznikStrony");
+$url = "https://www.otodom.pl/sprzedaz/dom/?page=$wskaznikStrony";
+$html = pobierzStrone($url);
 // Pobranie poszczegolnych danych ze strony
     for ($i = 0; $i<27; $i++){
         $data['nazwa ogloszenia'] = $html->find(".offer-item-title",$i)->innertext;
