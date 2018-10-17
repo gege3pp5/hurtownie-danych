@@ -1,0 +1,2 @@
+# hurtownie-danych
+hurtownie danych
