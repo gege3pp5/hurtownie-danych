@@ -86,12 +86,12 @@
     <script src="javascript.js"></script>
       </div>
 <!--  <?php include 'scriptphp.php';?> -->
-
-	<div class="ogloszenie" style="background: white;" ng-if="c.ogloszenie">
-		<div>Tytuł: {{c.ogloszenie["nazwa ogloszenia"]}}</div>
-		<div>Cena: {{c.ogloszenie["cena"]}}</div>
-		<div>Liczba pokoi: {{c.ogloszenie["liczba pokoi"]}}</div>
-		<div>Metraż: {{c.ogloszenie["metraz"]}}</div>
+	
+	<div ng-if="c.ogloszenia" ng-repeat="ogloszenie in c.ogloszenia" class="ogloszenie" style="background: white; border: 1px solid red; padding: 3px;">
+		<div>Tytuł: {{ogloszenie["nazwa ogloszenia"]}}</div>
+		<div>Cena: {{ogloszenie["cena"]}}</div>
+		<div>Liczba pokoi: {{ogloszenie["liczba pokoi"]}}</div>
+		<div>Metraż: {{ogloszenie["metraz"]}}</div>
 	</div>
   </body>
 </html>

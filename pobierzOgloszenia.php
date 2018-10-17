@@ -21,7 +21,7 @@ function pobierzStrone($url) {
 	$contents = '';
 	}
 
-	return str_get_html($contents);
+	return $contents;
 }
  
 /*
@@ -42,7 +42,7 @@ echo ((int)$iloscStron);
 while($iloscStron>=1){
 // Wczytanie strony z ktorej bedziemy pobierac dane
 $url = "https://www.otodom.pl/sprzedaz/dom/?page=$wskaznikStrony";
-$html = pobierzStrone($url);
+$html = str_get_html(pobierzStrone($url));
 // Pobranie poszczegolnych danych ze strony
     for ($i = 0; $i<27; $i++){
         $data['nazwa ogloszenia'] = $html->find(".offer-item-title",$i)->innertext;
@@ -59,7 +59,9 @@ $html = pobierzStrone($url);
 }
 }
 //Nie wiecej niz 1000 bo otodom blokuje
-pobierzDane(100);
-echo json_encode($dane);
+//pobierzDane(100);
+
+$url = 'https://www.otodom.pl/sprzedaz/dom/?page=5';
+echo (pobierzStrone($url));
 
 ?>
