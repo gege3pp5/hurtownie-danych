@@ -1,0 +1,40 @@
+body{
+    font-family:Lora;
+    background:rgba(36,52,71);
+    background-attachment:fixed;
+    background-position:center;
+    background-size:cover;
+}
+.container{
+    align-items: center;
+}
+h1,h2,h3,h4,h5,h6{
+    font-family:Raleway;
+    color:white;
+}
+.input-group{
+    position:relative;
+}
+
+.radio{
+    color:white;
+}
+.leftRadio{
+    float:left;
+
+    object-position: left;
+    padding-left: 20px;
+    margin-right: 20px;
+
+}
+.rightRadio{
+    float:right;
+    object-position:right;
+    padding-right: 20px;
+    margin-left: 20px;
+
+}
+#guzikZaglady{
+    position: relative;
+  left:49%;
+}
