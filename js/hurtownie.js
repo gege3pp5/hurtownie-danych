@@ -13,8 +13,30 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 		typsprzedazy: null
 	}
 	c.ogloszenia = [];
-	c.odczytDanych = function() {
-		$http.get('pobierzOgloszenia.php').then(
+	c.maxIloscRekordow = 50;
+	c.odczytDanych = function() {	
+		c.ogloszenia = [];
+		
+		let wskaznikStrony = 1;
+		//Jest to ilosc stron niezbedna do otworzenia, aby pobrac ilosc rekordow podana przez uzytkownika
+		let iloscStron = Math.ceil(c.maxIloscRekordow / 26);
+		
+		pobierzOgloszeniaRec();
+		
+		function pobierzOgloszeniaRec() {
+			let url = createUrl() + (wskaznikStrony == 1
+				? ''
+				: ('&page=' + wskaznikStrony));
+			let encodedUrl = encodeURIComponent(url);
+			pobierzOgloszenia(encodedUrl).then(() => {
+				if(++wskaznikStrony <= iloscStron)
+					pobierzOgloszeniaRec();
+			});
+		}
+	}
+	
+	function pobierzOgloszenia(url) {
+		return $http.get('pobierzOgloszenia.php?url=' + url).then(
 			(data) => {
 				let html = $($.parseHTML(data.data));
 				html.find('.offer-item').each(function() {
@@ -32,5 +54,16 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 			}
 		);
 	}
+	
+	function createUrl() {
+		let url='';
+		url = 'https://www.otodom.pl/sprzedaz/dom/'
+					+ '?search%5Bfilter_float_price%3Afrom%5D=' + c.param.cenaMin
+					+ '&search%5Bfilter_float_price%3Ato%5D=' + c.param.cenaMax
+					+ '&search%5Bdescription%5D=1'
+		return url;
+	}
 });
+
+
 
