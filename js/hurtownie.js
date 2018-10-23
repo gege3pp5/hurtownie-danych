@@ -4,12 +4,12 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 	$scope.x = 5;
 	let c = this;
 	c.param = {
+        id: null,
 		cenaMin: null,
 		cenaMax: null,
 		powMin: null,
 		powMax: null,
 		woj: null,
-		id: null,
 		typdomu: null,
 		typsprzedazy: null
 	}
@@ -47,7 +47,7 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 					ogloszenie["cena"] = ogloszenieJquery.find(".offer-item-price").text();
 					ogloszenie["liczba pokoi"] = ogloszenieJquery.find(".offer-item-rooms").text();
 					ogloszenie["metraz"] = ogloszenieJquery.find(".offer-item-area").text();
-					ogloszenie["id"] = ogloszenieJquery.find(".favourites-button").attr("data-id").text();
+                    ogloszenie["id"] = ogloszenieJquery.find(".button-observed").attr("data-id");
 					c.ogloszenia.push(ogloszenie);
 				});
 			},
