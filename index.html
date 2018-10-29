@@ -11,86 +11,259 @@
     <title>Hurtownie danych</title>
       <!-- import naszego css -->
     <link href="css/beautiful.css" rel="stylesheet">
-	
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+      
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 	<script src="js/hurtownie.js"></script>
+    
   </head>
     
-  <body ng-app="hurtownie" ng-controller="mainCtrl as c">
-    <div class="container">
-    <h1>Pobieranie danych</h1>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="cena">zł</span>
-      </div>
-      <input ng-model="c.param.cenaMin" type="number" class="form-control" id="cenaMinimalna" placeholder="Cena Minimalna" aria-label="cenamin">
-      <input ng-model="c.param.cenaMax" type="number" class="form-control" id="cenaMaksymalna" placeholder="Cena Maksymalna" aria-label="cenamax">
-    </div>
-        
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="powierzchnia">m2</span>
-      </div>
-      <input ng-model="c.param.powMin" type="text" class="form-control" id="powierzchniaMinimalna" placeholder="Powierzchnia minimalna" aria-label="cenamin">
-      <input ng-model="c.param.powMax" type="text" class="form-control" id="powierzchniaMaksymalna" placeholder="Powierzchnia maksymalna" aria-label="cenamax">
-    </div>
-        
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <label class="input-group-text" for="wybraneWojewodztwo">Województwo</label>
-      </div>
-      <select class="custom-select" id="wybraneWojewodztwo" ng-model="c.param.woj">
-        <option selected value="0">Wybierz...</option>
-        <option value="1">dolnośląskie</option>
-        <option value="2">kujawsko-pomorskie</option>
-        <option value="3">lubelskie</option>
-        <option value="4">lubuskie</option>
-        <option value="5">łódzkie</option>
-        <option value="6">małopolskie</option>
-        <option value="7">mazowieckie</option>
-        <option value="8">opolskie</option>
-        <option value="9">podkarpackie</option>
-        <option value="10">podlaskie</option>
-        <option value="11">pomorskie</option>
-        <option value="12">śląskie</option>
-        <option value="13">świętokrzyskie</option>
-        <option value="14">warmińsko-mazurskie</option>
-        <option value="15">wielkopolskie</option>
-        <option value="16">zachodniopomorskie</option>
-      </select>
-    </div>
-        
-    <div class="radio">
-        <div class="leftRadio">
-        <label><input type="radio" value="dom" name="TypDomu" checked ng-model="c.param.typdomu">Dom</label>
-        </div>
-        <div class="rightRadio">
-        <label><input type="radio" value="sprzedaz" class= "rightradio" name="TypSprzedazy" checked ng-model="c.param.typsprzedazy">Sprzedaz</label>
-        </div>
-        <div class="leftRadio">
-        <label><input type="radio" value="mieszkanie" class= "leftradio" name="TypDomu" ng-model="c.param.typdomu">Mieszkanie</label>
-        </div>
-        <div class="rightRadio">
-        <label><input type="radio" value="wynajem" class= "rightradio" name="TypSprzedazy" ng-model="c.param.typsprzedazy">Wynajem</label>
-        </div>
-    </div>
-    <br><br>
-        
-    <input class="btn btn-primary" ng-click="c.odczytDanych()" id="guzikZaglady" type="submit" value="Don't press it">
+<body ng-app="hurtownie" ng-controller="mainCtrl as c">
 
-    <!-- Optional JavaScript -->
+ <!-- NAVBAR MENU -->
+    
+    <nav class="navbar navbar-expand-lg ">
+        <div class="container">
+            <a class="navbar-brand title-nav" href="#"><i class="fa fa-globe fa-1x"></i> Hurtownie <span> danych</span></a>
+  
+            <div class="collape " id="navbarNav">
+                <ul class="navbar-nav">
+                    <li id="menu-home" class="nav-item active" onclick="homePage()">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li id="menu-etl" class="nav-item" onclick="etlPage()">
+                        <a class="nav-link" href="#">Proces ETL</a>
+                    </li>
+                    <li id="menu-bd" class="nav-item" onclick="basePage()">
+                        <a class="nav-link" href="#">Operacje na bazie danych</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+<!-- !!!!!!!!!!!!HOME PAGE WITH DESCRIPTION AND DOCUMENTATION!!!!!!!!!!!!!!!! -->    
+    <div class="container">
+    <div class="home" id="home">
+        <h1>Projekt zrobiony w ramach przedmiotu Hurtownie danych by: <br> 
+            <span>Karol Tarłowski</span><br>
+            <span>Grzegorz Więcek</span><br>
+            <span>Oleksandra Hriaznova</span></h1>
+        <p>Tu napiszemy coś o naszym projekcie</p>
+        <p>I tu możemy wrzucić pliki z dokumentacją</p>
+    </div>    
+      
+<!-- !!!!!!!!!!!ETL PAGE WITH FORM AND TABLE!!!!!!!!!!!!!! -->    
+    
+<div class='form display-none' id="form"> 
+        
+    <div class="radio">  
+        <fieldset class="col-sm-6 form-left form-group ">
+            <div class="row">
+                <legend class="col-form-label col-sm-3 pt-0">Typ zabudowy:</legend>
+                <div class="col-sm-9">
+                    <div class="form-check">
+                        <label><input class="form-check-input" type="radio" value="dom" name="TypDomu" checked ng-model="c.param.typdomu">Dom</label>
+                    </div>
+                    <div class="form-check">
+                        <label><input class="form-check-input" type="radio" value="mieszkanie" class= "leftradio" name="TypDomu" ng-model="c.param.typdomu">Mieszkanie</label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="col-sm-6 form-left form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-3 pt-0">Typ umowy:</legend>
+                <div class="col-sm-9">
+                    <div class="form-check">
+                        <label><input class="form-check-input" type="radio" value="wynajem" class= "rightradio" name="TypSprzedazy" ng-model="c.param.typsprzedazy">Wynajem</label>
+                    </div>
+                    <div class="form-check">
+                        <label><input class="form-check-input" type="radio" value="sprzedaz" class= "rightradio" name="TypSprzedazy" checked ng-model="c.param.typsprzedazy">Sprzedaż</label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="cena">zł</span>
+        </div>
+        <input ng-model="c.param.cenaMin" type="number" class="form-control" id="cenaMinimalna" placeholder="Cena Minimalna" aria-label="cenamin">
+        <input ng-model="c.param.cenaMax" type="number" class="form-control" id="cenaMaksymalna" placeholder="Cena Maksymalna" aria-label="cenamax">
+    </div>
+        
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="powierzchnia">m2</span>
+        </div>
+        <input ng-model="c.param.powMin" type="text" class="form-control" id="powierzchniaMinimalna" placeholder="Powierzchnia minimalna" aria-label="cenamin">
+        <input ng-model="c.param.powMax" type="text" class="form-control" id="powierzchniaMaksymalna" placeholder="Powierzchnia maksymalna" aria-label="cenamax">
+    </div>
+        
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="wybraneWojewodztwo">Województwo</label>
+        </div>
+        <select class="custom-select" id="wybraneWojewodztwo" ng-model="c.param.woj">
+            <option selected value="0">Wybierz...</option>
+            <option value="1">dolnośląskie</option>
+            <option value="2">kujawsko-pomorskie</option>
+            <option value="3">lubelskie</option>
+            <option value="4">lubuskie</option>
+            <option value="5">łódzkie</option>
+            <option value="6">małopolskie</option>
+            <option value="7">mazowieckie</option>
+            <option value="8">opolskie</option>
+            <option value="9">podkarpackie</option>
+            <option value="10">podlaskie</option>
+            <option value="11">pomorskie</option>
+            <option value="12">śląskie</option>
+            <option value="13">świętokrzyskie</option>
+            <option value="14">warmińsko-mazurskie</option>
+            <option value="15">wielkopolskie</option>
+            <option value="16">zachodniopomorskie</option>
+        </select>
+    </div>
+    <div class="text-center">
+        <button id ="etl-btn" type="submit" ng-click="c.odczytDanych()" class="btn" onclick="tableDisplay()"><i class="fa fa-cogs fa-1x"></i>ETL</button>
+        <button id="e-btn" class="btn" ng-click="c.odczytDanych()" type="submit"><i class="fa fa-cloud-upload"></i>E</button>
+        <button id="t-btn" class="btn" ng-click="c.odczytDanych()" type="submit" disabled><i class="fa fa-spinner"></i>T</button>
+        <button id="l-btn" class="btn" ng-click="c.odczytDanych()" type="submit" disabled><i class="fa fa-database"></i>L</button>
+    </div>
+</div>
+   
+<!-- TABELA Z WYNIKAMI -->
+                <!-- Może treba dodać jakiś atrybut z Angulara zamiast klasy "display-none", dzięki któremu tablica będzie wyświetlana tylko jak są jakieś wyniki -->
+	<div id="table"  class=" display-none">
+        <p> Pobrano plików: </p>
+        <p> Do bazy zostało załadowano rekordów: {{c.maxIloscRekordow}}</p>
+        <table class="table table-hover ogloszenie" > 
+
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tytuł</th>
+                    <th scope="col">Cena</th>
+                    <th scope="col">Liczba pokoi</th>
+                    <th scope="col">Metraż</th>
+                    <th scope="col">ID</th>
+                </tr>
+            </thead>
+            <tbody ng-if="c.ogloszenia" ng-repeat="ogloszenie in c.ogloszenia">
+                <tr >
+                    <th scope="row">#</th>
+                    <td>{{ogloszenie["nazwa ogloszenia"]}}</td>
+                    <td>{{ogloszenie["cena"]}}</td>
+                    <td>{{ogloszenie["liczba pokoi"]}}</td>
+                    <td>{{ogloszenie["metraz"]}}</td>
+                    <td>{{ogloszenie["id"]}}</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+      
+
+<!-- !!!!!!!!!!!!!!!!!!!!!!!!DATA BASE PAGE!!!!!!!!!!!!!!!!!!!!!!!! -->   
+<div id="baza-danych" class="display-none baza" >
+    <div class="row">
+        <div class="col-sm-6 text-center">Eksport danych do pliku .csv <button class="btn" type="submit"><i class="fa fa-file-excel-o"></i>Pobrać plik .csv</button></div>
+            
+        <div col="col-sm-6 text-center">Wyczyszczenie bazy danych <button class="btn" type="submit"><i class="fa fa-trash"></i>Wyczyszczyć BD</button></div>
+    </div>
+    <div class="form">
+        <h3>Wyszukiwanie w bazie danych według kryteriów</h3>
+            <form>
+                <div class="radio">  
+                <fieldset class="col-sm-6 form-left form-group ">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 pt-0">Typ zabudowy:</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check">
+                                <label><input class="form-check-input" type="radio" value="dom" name="TypDomu" checked>Dom</label>
+                            </div>
+                            <div class="form-check">
+                                <label><input class="form-check-input" type="radio" value="mieszkanie" class= "leftradio" name="TypDomu">Mieszkanie</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="col-sm-6 form-left form-group">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 pt-0">Typ umowy:</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check">
+                                <label><input class="form-check-input" type="radio" value="wynajem" class= "rightradio" name="TypSprzedazy">Wynajem</label>
+                            </div>
+                            <div class="form-check">
+                                <label><input class="form-check-input" type="radio" value="sprzedaz" class= "rightradio" name="TypSprzedazy" checked>Sprzedaż</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+       
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="id-ogloszenia">ID</span>
+                </div>
+                <input type="number" class="form-control" id="idOgloszenia" placeholder="ID ogłoszenia" aria-label="cenamin">
+            </div>
+                
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="cena">zł</span>
+                </div>
+                <input type="number" class="form-control" id="cenaMinimalna" placeholder="Cena Minimalna" aria-label="cenamin">
+                <input type="number" class="form-control" id="cenaMaksymalna" placeholder="Cena Maksymalna" aria-label="cenamax">
+            </div>
+        
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="powierzchnia">m2</span>
+                </div>
+                <input type="text" class="form-control" id="powierzchniaMinimalna" placeholder="Powierzchnia minimalna" aria-label="cenamin">
+                <input type="text" class="form-control" id="powierzchniaMaksymalna" placeholder="Powierzchnia maksymalna" aria-label="cenamax">
+            </div>
+        
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="wybraneWojewodztwo">Województwo</label>
+                </div>
+                <select class="custom-select" id="wybraneWojewodztwo">
+                    <option selected value="0">Wybierz...</option>
+                    <option value="1">dolnośląskie</option>
+                    <option value="2">kujawsko-pomorskie</option>
+                    <option value="3">lubelskie</option>
+                    <option value="4">lubuskie</option>
+                    <option value="5">łódzkie</option>
+                    <option value="6">małopolskie</option>
+                    <option value="7">mazowieckie</option>
+                    <option value="8">opolskie</option>
+                    <option value="9">podkarpackie</option>
+                    <option value="10">podlaskie</option>
+                    <option value="11">pomorskie</option>
+                    <option value="12">śląskie</option>
+                    <option value="13">świętokrzyskie</option>
+                    <option value="14">warmińsko-mazurskie</option>
+                    <option value="15">wielkopolskie</option>
+                    <option value="16">zachodniopomorskie</option>
+                </select>
+            </div>
+                <div class="text-center"><button class="btn" type="submit"><i class="fa fa-search"></i>Wyszukaj</button></div>
+            </form>
+        </div>
+    </div>
+</div> 
+    <!--  <?php include 'scriptphp.php';?> -->
+    
+         <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-      </div>
-<!--  <?php include 'scriptphp.php';?> -->
-	
-	<div ng-if="c.ogloszenia" ng-repeat="ogloszenie in c.ogloszenia" class="ogloszenie" style="background: white; border: 1px solid red; padding: 3px;">
-		<div>Tytuł: {{ogloszenie["nazwa ogloszenia"]}}</div>
-		<div>Cena: {{ogloszenie["cena"]}}</div>
-		<div>Liczba pokoi: {{ogloszenie["liczba pokoi"]}}</div>
-		<div>Metraż: {{ogloszenie["metraz"]}}</div>
-	</div>
+    
+    <script src="js/front.js"></script>
   </body>
 </html>
