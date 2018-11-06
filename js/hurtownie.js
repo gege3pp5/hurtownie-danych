@@ -13,6 +13,7 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 		typdomu: null,
 		typsprzedazy: null
 	}
+    
 	c.ogloszenia = [];
 	c.maxIloscRekordow = 50;
 	c.odczytDanych = function() {	
@@ -21,7 +22,7 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 		let wskaznikStrony = 1;
 		//Jest to ilosc stron niezbedna do otworzenia, aby pobrac ilosc rekordow podana przez uzytkownika
 		let iloscStron = Math.ceil(c.maxIloscRekordow / 27);
-		
+		c.iloscStron = iloscStron;
 		pobierzOgloszeniaRec();
 		
 		function pobierzOgloszeniaRec() {
@@ -84,6 +85,7 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 	}
     
 });
+
 
 
 
