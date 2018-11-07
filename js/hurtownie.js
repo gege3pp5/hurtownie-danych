@@ -1,5 +1,18 @@
 let hurtownie = angular.module('hurtownie', []);
 
+// Zmienna container oraz licznik i wykorzystywane sa przy tworzeniu i przechowywaniu zmiennych pobranych ze strony
+var container = {};
+let i = 1;   
+// Utworzenie klasy ObjectInJS umozliwia przeslanie plikow do JSON;
+    function ObjectInJS(nazwa,cena,lpok,met,id){
+        this.nazwa = nazwa;
+        this.cena = cena;
+        this.lpok = lpok;
+        this.met = met;
+        this.id = id;
+    }
+
+
 hurtownie.controller("mainCtrl", function($scope, $http) {
 	$scope.x = 5;
 	let c = this;
@@ -13,7 +26,8 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 		typdomu: null,
 		typsprzedazy: null
 	}
-    
+
+
 	c.ogloszenia = [];
 	c.maxIloscRekordow = 50;
 	c.odczytDanych = function() {	
@@ -38,6 +52,7 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 	}
 	
 	function pobierzOgloszenia(url) {
+        
 		return $http.get('pobierzOgloszenia.php?url=' + url).then(
 			(data) => {
 				let html = $($.parseHTML(data.data));
@@ -50,6 +65,19 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 					ogloszenie["metraz"] = ogloszenieJquery.find(".offer-item-area").text();
                     ogloszenie["id"] = ogloszenieJquery.find(".button-observed").attr("data-id");
 					c.ogloszenia.push(ogloszenie);
+                    
+                    // Utworzenie zmiennych aby wykorzystac konstruktor ObjectInJS
+                    let nazwa = ogloszenie["nazwa ogloszenia"];
+                    let cena = ogloszenie["cena"];
+                    let lpokoi = ogloszenie["liczba pokoi"];
+                    let metraz = ogloszenie["metraz"];
+                    let id = ogloszenie["id"];
+                    
+                    // Wartosci pobrane ze strony przechowywane sa w objektach klasy ObjectInJS, te z kolei przechowywane sa w obiekcie container, aby umozliwic autonumerowaną generacje obiektow z roznymi nazwami
+                    container[i] = new ObjectInJS(nazwa,cena,lpokoi,metraz,id);
+                    console.log(JSON.stringify(container[i]));
+               //     console.log(container[1]);
+                    i++;
 				});
 			},
 			(powod) => {
@@ -57,6 +85,7 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 			}
 		);
 	}
+
 // Pierwotna wersja funkcji createUrl ktora na pewno dziala	
 //	function createUrl() {
 //		let url='';
