@@ -24,7 +24,7 @@
     
     <nav class="navbar navbar-expand-lg ">
         <div class="container">
-            <a class="navbar-brand title-nav" href="#"><i class="fa fa-globe fa-1x"></i> Hurtownie <span> danych</span></a>
+            <a class="navbar-brand title-nav" href="#" onclick="homePage()"><i class="fa fa-globe fa-1x"></i> Hurtownie <span> danych</span></a>
   
             <div class="collape " id="navbarNav">
                 <ul class="navbar-nav">
@@ -138,7 +138,7 @@
                 <!-- Może treba dodać jakiś atrybut z Angulara zamiast klasy "display-none", dzięki któremu tablica będzie wyświetlana tylko jak są jakieś wyniki -->
 	<div id="table"  class=" display-none">
         <p> Pobrano plików: </p>
-        <p> Do bazy zostało załadowano rekordów: {{c.maxIloscRekordow}}</p>
+        <p> Do bazy zostały załadowane rekordy z {{c.iloscStron}} stron</p>
         <table class="table table-hover ogloszenie" > 
 
             <thead>
