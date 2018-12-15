@@ -87,15 +87,13 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		let baseUrl = c.buildBaseUrl(c.searchParams);
 		mainC.isBusy = true;
 		$http.get('pobierzOgloszenia.php?url=' + encodeURIComponent(baseUrl + '&nrAdsPerPage=24')).then(
-			(reponse) => {
-				let html = $($.parseHTML(reponse.data));
+			(response) => {
+				let html = $($.parseHTML(response.data));
 				let totalNrOfAdds = parseInt(html.find('.offers-index strong')[0].innerText.replace(/\s+/g, ''));
 				let nrOfAddsToDownload = Math.min(totalNrOfAdds, maxNrOfAdds);
 				let nrOfPages = Math.ceil(nrOfAddsToDownload / defaultAddsPerPage);
 				let urls = (new Array(nrOfPages).fill(undefined)).map((val, index) => {
-					let url = baseUrl + '&nrAdsPerPage=' + defaultAddsPerPage + (
-						index == 0 ? '' : ('&page=' + (index + 1 ))
-					);
+					let url = baseUrl + '&nrAdsPerPage=' + defaultAddsPerPage + '&page=' + (index + 1);
 					return encodeURIComponent(url);
 				});
 				
@@ -113,7 +111,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 								c.nextStep = 't';
 								mainC.isBusy = false;
 								$('html, body').animate({
-									scrollTop: $('#form').offset().top + $('#form').outerHeight(true) - 40
+									scrollTop: $('#etl-buttons').offset().top
 								}, 500);
 							}
 						},
@@ -136,7 +134,17 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 	}
 	
 	c.load = function() {
-		c.nextStep = 'e'
+		mainC.isBusy = true;
+		$http.post('load.php', c.adds).then(
+			(response) => {
+				console.log(response);
+			},
+			(failReason) => {
+				console.log(failReason);
+			}
+		).finally(() => {
+			mainC.isBusy = false;
+		});
 	}
 	
 	c.buildBaseUrl = function(searchParams) {
@@ -166,7 +174,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 			let jqueryAdd = $(this);
 			let add = {};
 			add["name"] = jqueryAdd.find(".offer-item-title").text();
-			add["price"] = jqueryAdd.find(".offer-item-price").text();
+			add["price"] = jqueryAdd.find(".offer-item-price").text().trim().replace(/\s+/g, ' ');
 			add["nrOfRooms"] = jqueryAdd.find(".offer-item-rooms").text().split(' ')[0];
 			add["size"] = jqueryAdd.find(".offer-item-area").text();
             add["id"] = jqueryAdd.find(".button-observed").attr("data-id");

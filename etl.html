@@ -53,14 +53,14 @@
 			ng-options="region for region in mainC.regions">
         </select>
     </div>
-    <div class="text-center">
+    <div id="etl-buttons" class="text-center">
         <button id ="etl-btn" type="submit" ng-click="c.performEtl()" class="btn" ng-disabled="c.nextStep != 'e'"><i class="fa fa-cogs fa-1x"></i>ETL</button>
         <button id="e-btn" class="btn" ng-click="c.extract()" type="submit" ng-disabled="c.nextStep != 'e'"><i class="fa fa-cloud-upload"></i>E</button>
         <button id="t-btn" class="btn" ng-click="c.transform()" type="submit" ng-disabled="c.nextStep != 't'"><i class="fa fa-spinner"></i>T</button>
         <button id="l-btn" class="btn" ng-click="c.load()" type="submit" ng-disabled="c.nextStep != 'l'"><i class="fa fa-database"></i>L</button>
     </div>
 </div>
-<div id="extraction-results" ng-show="c.nextStep != 'e'" id="table">
+<div ng-show="c.nextStep != 'e'" id="table">
     <p> Pobrano głoszeń: {{c.adds.length}}</p>
     <table class="table table-hover ogloszenie" > 
         <thead>

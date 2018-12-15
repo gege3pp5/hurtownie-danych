@@ -1,7 +1,11 @@
-DROP DATABASE hurtownieDB;
 CREATE DATABASE hurtownieDB;
-CREATE TABLE IF NOT EXISTS userDatabase(ID INT PRIMARY KEY ,cenaMin INT, cenaMax INT, powMin INT, powMax INT, woj TEXT, typdomu TEXT, typsprzedazy TEXT);
+
 USE hurtownieDB;
-INSERT INTO userdatabase(ID,cenaMin,cenaMax,powMin,powMax,woj,typdomu,typsprzedazy) VALUES(1, 50, 5000, 10, 100, "slaskie", "dom", "sprzedaz");
-INSERT INTO userdatabase(ID,cenaMin,cenaMax,powMin,powMax,woj,typdomu,typsprzedazy) VALUES(2, 502, 50002, 102, 1002, "malopolskie", "mieszkanie", "wynajem");
-DELETE FROM userDatabase WHERE ID = 2;
+CREATE TABLE IF NOT EXISTS ads(
+    Id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Price INT,
+    Size VARCHAR(200),
+    Region VARCHAR(200),
+    BuildingType VARCHAR(200),
+    ContractType VARCHAR(200)
+);
