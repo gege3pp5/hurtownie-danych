@@ -68,7 +68,9 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
                     
                     // Utworzenie zmiennych aby wykorzystac konstruktor ObjectInJS
                     let nazwa = ogloszenie["nazwa ogloszenia"];
-                    let cena = ogloszenie["cena"];
+					let cena = ogloszenie["cena"];
+					// Usuniecie zbednych spacji ktore otodom generuje
+					cena = cena.replace(/\s+/g, '');
                     let lpokoi = ogloszenie["liczba pokoi"];
                     let metraz = ogloszenie["metraz"];
                     let id = ogloszenie["id"];
@@ -114,7 +116,3 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 	}
     
 });
-
-
-
-
