@@ -60,11 +60,9 @@
         <button id="l-btn" class="btn" ng-click="c.load()" type="submit" ng-disabled="c.nextStep != 'l'"><i class="fa fa-database"></i>L</button>
     </div>
 </div>
-<div id="table">
-    <p> Pobrano plików: </p>
-    <p> Do bazy zostały załadowane rekordy z {{c.iloscStron}} stron</p>
+<div id="extraction-results" ng-show="c.nextStep != 'e'" id="table">
+    <p> Pobrano głoszeń: {{c.adds.length}}</p>
     <table class="table table-hover ogloszenie" > 
-
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -75,14 +73,14 @@
                 <th scope="col">ID</th>
             </tr>
         </thead>
-        <tbody ng-if="c.ogloszenia" ng-repeat="ogloszenie in c.ogloszenia">
-            <tr >
-                <th scope="row">#</th>
-                <td>{{ogloszenie["nazwa ogloszenia"]}}</td>
-                <td>{{ogloszenie["cena"]}}</td>
-                <td>{{ogloszenie["liczba pokoi"]}}</td>
-                <td>{{ogloszenie["metraz"]}}</td>
-                <td>{{ogloszenie["id"]}}</td>
+        <tbody ng-repeat="add in c.adds">
+            <tr>
+                <th>{{$index + 1}}</th>
+                <td>{{add["name"]}}</td>
+                <td>{{add["price"]}}</td>
+                <td style="text-align: center;">{{add["nrOfRooms"]}}</td>
+                <td>{{add["size"]}}</td>
+                <td>{{add["id"]}}</td>
             </tr>
         </tbody>
     </table>

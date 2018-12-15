@@ -20,31 +20,36 @@ String.prototype.poAngielskiemu = function() {
 	})
 }
 
+let allRegionsName = 'CAŁA POLSKA';
+let regions = [
+	allRegionsName,
+	'dolnośląskie',
+	'kujawsko-pomorskie',
+	'lubelskie',
+	'lubuskie',
+	'łódzkie',
+	'małopolskie',
+	'mazowieckie',
+	'opolskie',
+	'podkarpackie',
+	'podlaskie',
+	'pomorskie',
+	'śląskie',
+	'świętokrzyskie',
+	'warmińsko-mazurskie',
+	'wielkopolskie',
+	'zachodniopomorskie',
+];
+
+let maxNrOfAdds = 72;
+let defaultAddsPerPage = 72;
 
 let hurtownie = angular.module('hurtownie', []);
 
 hurtownie.controller("mainCtrl", function($scope, $http) {
 	let mainC = this;
 	
-	mainC.regions = [
-		'WSZYSTKIE',
-		'dolnośląskie',
-		'kujawsko-pomorskie',
-		'lubelskie',
-		'lubuskie',
-		'łódzkie',
-		'małopolskie',
-		'mazowieckie',
-		'opolskie',
-		'podkarpackie',
-		'podlaskie',
-		'pomorskie',
-		'śląskie',
-		'świętokrzyskie',
-		'warmińsko-mazurskie',
-		'wielkopolskie',
-		'zachodniopomorskie',
-	];
+	mainC.regions = regions;
 
 	mainC.activePage = 'etl';
 	
@@ -59,8 +64,11 @@ hurtownie.controller("homeCtrl", function($scope, $http) {
 
 hurtownie.controller("etlCtrl", function($scope, $http) {
 	let c = this;
-	
+	let mainC = $scope.mainC;
+
 	c.nextStep = 'e';
+
+	c.adds = [];
 	
 	c.searchParams = {
 		buildingType: 'dom',
@@ -69,15 +77,58 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		priceMax: null,
 		areaMin: null,
 		areaMax: null,
-		region: 'WSZYSTKIE',
+		region: allRegionsName,
 	};
 		
 	c.performEtl = function() {
 	}
 	
 	c.extract = function() {
-		let baseUrl = buildBaseUrl(c.searchParams);
-		c.nextStep = 't';
+		let baseUrl = c.buildBaseUrl(c.searchParams);
+		mainC.isBusy = true;
+		$http.get('pobierzOgloszenia.php?url=' + encodeURIComponent(baseUrl + '&nrAdsPerPage=24')).then(
+			(reponse) => {
+				let html = $($.parseHTML(reponse.data));
+				let totalNrOfAdds = parseInt(html.find('.offers-index strong')[0].innerText.replace(/\s+/g, ''));
+				let nrOfAddsToDownload = Math.min(totalNrOfAdds, maxNrOfAdds);
+				let nrOfPages = Math.ceil(nrOfAddsToDownload / defaultAddsPerPage);
+				let urls = (new Array(nrOfPages).fill(undefined)).map((val, index) => {
+					let url = baseUrl + '&nrAdsPerPage=' + defaultAddsPerPage + (
+						index == 0 ? '' : ('&page=' + (index + 1 ))
+					);
+					return encodeURIComponent(url);
+				});
+				
+				let adds = [];
+				
+				(function extractNextPage() {
+					$http.get('pobierzOgloszenia.php?url=' + urls.pop()).then(
+						(reponse) => {
+							let html = $($.parseHTML(reponse.data));
+							c.extractAddsTo(adds, html);	
+							if(urls.length > 0)
+								extractNextPage();
+							else {
+								c.adds = adds;
+								c.nextStep = 't';
+								mainC.isBusy = false;
+								$('html, body').animate({
+									scrollTop: $('#form').offset().top + $('#form').outerHeight(true) - 40
+								}, 500);
+							}
+						},
+						(failReason) => {
+							console.log(failReason);
+							mainC.isBusy = false;
+						}
+					);
+				})();
+			},
+			(failReason) => {
+				console.log(failReason);
+				mainC.isBusy = false;
+			}
+		);		
 	}
 	
 	c.transform = function() {
@@ -88,14 +139,14 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		c.nextStep = 'e'
 	}
 	
-	function buildBaseUrl(searchParams) {
+	c.buildBaseUrl = function(searchParams) {
 		let url = 'https://www.otodom.pl'
 			+ '/' + c.searchParams.contractType.poAngielskiemu()
 			+ '/' + c.searchParams.buildingType.poAngielskiemu()
-			+ ((c.searchParams.region === 'WSZYSTKIE')
+			+ ((c.searchParams.region === allRegionsName)
 				? ''
 				: ('/' + c.searchParams.region.poAngielskiemu()))
-			+ '?';
+			+ '/?';
 		let urlParams = [];
 		if(c.searchParams.priceMin !== null)
 			urlParams.push('search%5Bfilter_float_price%3Afrom%5D=' + c.searchParams.priceMin);
@@ -106,9 +157,21 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		if(c.searchParams.areaMax !== null)
 			urlParams.push('search%5Bfilter_float_m%3Ato%5D=' + c.searchParams.areaMax);
 		url += urlParams.join('&')
-			+ '&search%5Bdescription%5D=1'
-			+ '&nrAdsPerPage=72#';
+			+ '&search%5Bdescription%5D=1';$('#form').offset()
 		return url;
+	}
+	
+	c.extractAddsTo = function(addsList, page) {
+		page.find('.listing-title:not(.listing-title-promoted) ~ .offer-item').each(function() {
+			let jqueryAdd = $(this);
+			let add = {};
+			add["name"] = jqueryAdd.find(".offer-item-title").text();
+			add["price"] = jqueryAdd.find(".offer-item-price").text();
+			add["nrOfRooms"] = jqueryAdd.find(".offer-item-rooms").text().split(' ')[0];
+			add["size"] = jqueryAdd.find(".offer-item-area").text();
+            add["id"] = jqueryAdd.find(".button-observed").attr("data-id");
+			addsList.push(add);
+		});
 	}
 });
 
