@@ -1,0 +1,89 @@
+<div class='form' id="form">       
+    <div class="radio">  
+        <fieldset class="col-sm-6 form-left form-group ">
+            <div class="row">
+                <legend class="col-form-label col-sm-3 pt-0">Typ zabudowy:</legend>
+                <div class="col-sm-9">
+                    <div class="form-check">
+                        <label><input class="form-check-input" type="radio" value="dom" name="TypDomu" checked ng-model="c.searchParams.buildingType">Dom</label>
+                    </div>
+                    <div class="form-check">
+                        <label><input class="form-check-input" type="radio" value="mieszkanie" class= "leftradio" name="TypDomu" ng-model="c.searchParams.buildingType">Mieszkanie</label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="col-sm-6 form-left form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-3 pt-0">Typ umowy:</legend>
+                <div class="col-sm-9">
+                    <div class="form-check">
+                        <label><input class="form-check-input" type="radio" value="wynajem" class= "rightradio" name="TypSprzedazy" ng-model="c.searchParams.contractType">Wynajem</label>
+                    </div>
+                    <div class="form-check">
+                        <label><input class="form-check-input" type="radio" value="sprzedaz" class= "rightradio" name="TypSprzedazy" checked ng-model="c.searchParams.contractType">Sprzedaż</label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="cena">zł</span>
+        </div>
+        <input ng-model="c.searchParams.priceMin" type="number" class="form-control" id="cenaMinimalna" placeholder="Cena Minimalna" aria-label="cenamin">
+        <input ng-model="c.searchParams.priceMax" type="number" class="form-control" id="cenaMaksymalna" placeholder="Cena Maksymalna" aria-label="cenamax">
+    </div>
+        
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="powierzchnia">m2</span>
+        </div>
+        <input ng-model="c.searchParams.areaMin" type="text" class="form-control" id="powierzchniaMinimalna" placeholder="Powierzchnia minimalna" aria-label="cenamin">
+        <input ng-model="c.searchParams.areaMax" type="text" class="form-control" id="powierzchniaMaksymalna" placeholder="Powierzchnia maksymalna" aria-label="cenamax">
+    </div>
+        
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="wybraneWojewodztwo">Województwo</label>
+        </div>
+        <select class="custom-select" id="wybraneWojewodztwo"
+			ng-model="c.searchParams.region"
+			ng-options="region for region in mainC.regions">
+        </select>
+    </div>
+    <div class="text-center">
+        <button id ="etl-btn" type="submit" ng-click="c.performEtl()" class="btn" ng-disabled="c.nextStep != 'e'"><i class="fa fa-cogs fa-1x"></i>ETL</button>
+        <button id="e-btn" class="btn" ng-click="c.extract()" type="submit" ng-disabled="c.nextStep != 'e'"><i class="fa fa-cloud-upload"></i>E</button>
+        <button id="t-btn" class="btn" ng-click="c.transform()" type="submit" ng-disabled="c.nextStep != 't'"><i class="fa fa-spinner"></i>T</button>
+        <button id="l-btn" class="btn" ng-click="c.load()" type="submit" ng-disabled="c.nextStep != 'l'"><i class="fa fa-database"></i>L</button>
+    </div>
+</div>
+<div id="table">
+    <p> Pobrano plików: </p>
+    <p> Do bazy zostały załadowane rekordy z {{c.iloscStron}} stron</p>
+    <table class="table table-hover ogloszenie" > 
+
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tytuł</th>
+                <th scope="col">Cena</th>
+                <th scope="col">Liczba pokoi</th>
+                <th scope="col">Metraż</th>
+                <th scope="col">ID</th>
+            </tr>
+        </thead>
+        <tbody ng-if="c.ogloszenia" ng-repeat="ogloszenie in c.ogloszenia">
+            <tr >
+                <th scope="row">#</th>
+                <td>{{ogloszenie["nazwa ogloszenia"]}}</td>
+                <td>{{ogloszenie["cena"]}}</td>
+                <td>{{ogloszenie["liczba pokoi"]}}</td>
+                <td>{{ogloszenie["metraz"]}}</td>
+                <td>{{ogloszenie["id"]}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

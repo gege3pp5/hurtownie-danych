@@ -1,0 +1,90 @@
+<div id="baza-danych" class="baza" >
+    <div class="row">
+        <div class="col-sm-6 text-center">Eksport danych do pliku .csv <button class="btn" type="submit"><i class="fa fa-file-excel-o"></i>Pobrać plik .csv</button></div>
+            
+        <div col="col-sm-6 text-center">Wyczyszczenie bazy danych <button class="btn" type="submit"><i class="fa fa-trash"></i>Wyczyszczyć BD</button></div>
+    </div>
+    <div class="form">
+        <h3>Wyszukiwanie w bazie danych według kryteriów</h3>
+            <form>
+                <div class="radio">  
+                <fieldset class="col-sm-6 form-left form-group ">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 pt-0">Typ zabudowy:</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check">
+                                <label><input class="form-check-input" type="radio" value="dom" name="TypDomu" checked>Dom</label>
+                            </div>
+                            <div class="form-check">
+                                <label><input class="form-check-input" type="radio" value="mieszkanie" class= "leftradio" name="TypDomu">Mieszkanie</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="col-sm-6 form-left form-group">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 pt-0">Typ umowy:</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check">
+                                <label><input class="form-check-input" type="radio" value="wynajem" class= "rightradio" name="TypSprzedazy">Wynajem</label>
+                            </div>
+                            <div class="form-check">
+                                <label><input class="form-check-input" type="radio" value="sprzedaz" class= "rightradio" name="TypSprzedazy" checked>Sprzedaż</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+       
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="id-ogloszenia">ID</span>
+                </div>
+                <input type="number" class="form-control" id="idOgloszenia" placeholder="ID ogłoszenia" aria-label="cenamin">
+            </div>
+                
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="cena">zł</span>
+                </div>
+                <input type="number" class="form-control" id="cenaMinimalna" placeholder="Cena Minimalna" aria-label="cenamin">
+                <input type="number" class="form-control" id="cenaMaksymalna" placeholder="Cena Maksymalna" aria-label="cenamax">
+            </div>
+        
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="powierzchnia">m2</span>
+                </div>
+                <input type="text" class="form-control" id="powierzchniaMinimalna" placeholder="Powierzchnia minimalna" aria-label="cenamin">
+                <input type="text" class="form-control" id="powierzchniaMaksymalna" placeholder="Powierzchnia maksymalna" aria-label="cenamax">
+            </div>
+        
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="wybraneWojewodztwo">Województwo</label>
+                </div>
+                <select class="custom-select" id="wybraneWojewodztwo">
+                    <option selected value="0">Wybierz...</option>
+                    <option value="1">dolnośląskie</option>
+                    <option value="2">kujawsko-pomorskie</option>
+                    <option value="3">lubelskie</option>
+                    <option value="4">lubuskie</option>
+                    <option value="5">łódzkie</option>
+                    <option value="6">małopolskie</option>
+                    <option value="7">mazowieckie</option>
+                    <option value="8">opolskie</option>
+                    <option value="9">podkarpackie</option>
+                    <option value="10">podlaskie</option>
+                    <option value="11">pomorskie</option>
+                    <option value="12">śląskie</option>
+                    <option value="13">świętokrzyskie</option>
+                    <option value="14">warmińsko-mazurskie</option>
+                    <option value="15">wielkopolskie</option>
+                    <option value="16">zachodniopomorskie</option>
+                </select>
+            </div>
+                <div class="text-center"><button class="btn" type="submit"><i class="fa fa-search"></i>Wyszukaj</button></div>
+            </form>
+        </div>
+    </div>
+</div> 
