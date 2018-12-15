@@ -46,6 +46,50 @@ let defaultAddsPerPage = 72;
 
 let hurtownie = angular.module('hurtownie', []);
 
+hurtownie.filter('spacedNumber', function() {
+	return function(nr) {
+		if(nr == null)
+			return '-';
+		let parts = nr.toString().split('.');
+		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+		return parts.join(',');
+	}
+});
+
+hurtownie.filter('adPrice', function() {
+	return function(priceStr, ad) {
+		if(priceStr == "-")
+			return priceStr;
+		return priceStr + (ad['contractType'] === 'wynajem' ? ' zł/mc' : ' zł');
+	}
+});
+
+hurtownie.filter('nrOfRooms', function() {
+	return function(nrOfRooms) {
+		if(nrOfRooms == null)
+			return '-';
+		return nrOfRooms == 11 ? '>10' : nrOfRooms.toString();
+	}
+});
+
+hurtownie.filter('size', function() {
+	return function(size) {
+		if(size == "-")
+			return size;
+		return size + ' m²';
+	}
+});
+
+hurtownie.filter('landSize', function() {
+	return function(size, ad) {
+		if(ad.buildingType != 'dom')
+			return 'nie dotyczy';
+		if(size == "-")
+			return size;
+		return size + ' m²';
+	}
+});
+
 hurtownie.controller("mainCtrl", function($scope, $http) {
 	let mainC = this;
 	
@@ -68,7 +112,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 
 	c.nextStep = 'e';
 
-	c.adds = [];
+	c.ads = [];
 	
 	c.searchParams = {
 		buildingType: 'dom',
@@ -97,17 +141,21 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 					return encodeURIComponent(url);
 				});
 				
-				let adds = [];
+				let ads = [];
 				
 				(function extractNextPage() {
 					$http.get('pobierzOgloszenia.php?url=' + urls.pop()).then(
 						(reponse) => {
 							let html = $($.parseHTML(reponse.data));
-							c.extractAddsTo(adds, html);	
+							c.extractAdsTo(ads, html);	
 							if(urls.length > 0)
 								extractNextPage();
 							else {
-								c.adds = adds;
+								ads.forEach(ad => {
+									ad.contractType = c.searchParams.contractType;
+									ad.buildingType = c.searchParams.buildingType;
+								});
+								c.ads = ads;
 								c.nextStep = 't';
 								mainC.isBusy = false;
 								$('html, body').animate({
@@ -169,16 +217,20 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		return url;
 	}
 	
-	c.extractAddsTo = function(addsList, page) {
+	c.extractAdsTo = function(adsList, page) {
 		page.find('.listing-title:not(.listing-title-promoted) ~ .offer-item').each(function() {
-			let jqueryAdd = $(this);
-			let add = {};
-			add["name"] = jqueryAdd.find(".offer-item-title").text();
-			add["price"] = jqueryAdd.find(".offer-item-price").text().trim().replace(/\s+/g, ' ');
-			add["nrOfRooms"] = jqueryAdd.find(".offer-item-rooms").text().split(' ')[0];
-			add["size"] = jqueryAdd.find(".offer-item-area").text();
-            add["id"] = jqueryAdd.find(".button-observed").attr("data-id");
-			addsList.push(add);
+			let jqueryAd = $(this);
+			let ad = {};
+			ad["name"] = jqueryAd.find(".offer-item-title").text();
+			let priceStr = jqueryAd.find(".offer-item-price").text().trim();
+			ad["price"] = parseFloat((priceStr.replace(',', '.').match(/[\s0-9\.]*/) || [''])[0].replace(/\s+/g, '')) || null;
+			let nrOfRoomsStr = jqueryAd.find(".offer-item-rooms").text().split(' ')[0];
+			ad["nrOfRooms"] = nrOfRoomsStr == ">10" ? 11 : (parseInt(nrOfRoomsStr) || null);
+			let sizeStr = jqueryAd.find(".offer-item-area").text();
+			ad["buildingSize"] = parseFloat((sizeStr.replace(',', '.').match(/[\s0-9\.]*/) || [''])[0].replace(/\s+/g, '')) || null;
+			ad["landSize"] = parseFloat((sizeStr.replace(',', '.').match(/.*m²działka([\s0-9\.]*)/) || ['', ''])[1].replace(/\s+/g, '')) || null;			
+            ad["id"] = jqueryAd.find(".button-observed").attr("data-id");
+			adsList.push(ad);
 		});
 	}
 });
@@ -186,70 +238,3 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 hurtownie.controller("dbCtrl", function($scope, $http) {
 	let c = this;
 });
-
-/*
-
-	c.ogloszenia = [];
-	c.maxIloscRekordow = 50;
-	c.odczytDanych = function() {	
-		c.ogloszenia = [];
-		
-		let wskaznikStrony = 1;
-		//Jest to ilosc stron niezbedna do otworzenia, aby pobrac ilosc rekordow podana przez uzytkownika
-		let iloscStron = Math.ceil(c.maxIloscRekordow / 27);
-
-		c.iloscStron = iloscStron;
-		pobierzOgloszeniaRec();
-		
-		function pobierzOgloszeniaRec() {
-			let url = createUrl() + (wskaznikStrony == 1
-				? ''
-				: ('&page=' + wskaznikStrony));
-			let encodedUrl = encodeURIComponent(url);
-			pobierzOgloszenia(encodedUrl).then(() => {
-				if(++wskaznikStrony <= iloscStron)
-					pobierzOgloszeniaRec();
-			});
-		}
-	}
-	
-	function pobierzOgloszenia(url) {
-        
-		return $http.get('pobierzOgloszenia.php?url=' + url).then(
-			(data) => {
-				let html = $($.parseHTML(data.data));
-				html.find('.offer-item').each(function() {
-					let ogloszenieJquery = $(this);
-					let ogloszenie = {};
-					ogloszenie["nazwa ogloszenia"] = ogloszenieJquery.find(".offer-item-title").text();
-					ogloszenie["cena"] = ogloszenieJquery.find(".offer-item-price").text();
-					ogloszenie["liczba pokoi"] = ogloszenieJquery.find(".offer-item-rooms").text();
-					ogloszenie["metraz"] = ogloszenieJquery.find(".offer-item-area").text();
-                    ogloszenie["id"] = ogloszenieJquery.find(".button-observed").attr("data-id");
-					c.ogloszenia.push(ogloszenie);
-                    
-                    // Utworzenie zmiennych aby wykorzystac konstruktor ObjectInJS
-                    let nazwa = ogloszenie["nazwa ogloszenia"];
-                    let cena = ogloszenie["cena"];
-                    let lpokoi = ogloszenie["liczba pokoi"];
-                    let metraz = ogloszenie["metraz"];
-                    let id = ogloszenie["id"];
-                    
-                    // Wartosci pobrane ze strony przechowywane sa w objektach klasy ObjectInJS, te z kolei przechowywane sa w obiekcie container, aby umozliwic autonumerowaną generacje obiektow z roznymi nazwami
-                    container[i] = new ObjectInJS(nazwa,cena,lpokoi,metraz,id);
-                    console.log(JSON.stringify(container[i]));
-               //     console.log(container[1]);
-                    i++;
-				});
-			},
-			(powod) => {
-				console.log('zagłada')
-			}
-		);
-	}
-    
-});*/
-
-
-
-

@@ -70,17 +70,19 @@
                 <th scope="col">Cena</th>
                 <th scope="col">Liczba pokoi</th>
                 <th scope="col">Metraż</th>
+                <th scope="col">Działka</th>
                 <th scope="col">ID</th>
             </tr>
         </thead>
-        <tbody ng-repeat="add in c.adds">
+        <tbody ng-repeat="ad in c.ads">
             <tr>
                 <th>{{$index + 1}}</th>
-                <td>{{add["name"]}}</td>
-                <td>{{add["price"]}}</td>
-                <td style="text-align: center;">{{add["nrOfRooms"]}}</td>
-                <td>{{add["size"]}}</td>
-                <td>{{add["id"]}}</td>
+                <td>{{ad["name"]}}</td>
+                <td class="text-center">{{ad["price"] | spacedNumber | adPrice:ad}}</td>
+                <td class="text-center">{{ad["nrOfRooms"] | nrOfRooms}}</td>
+                <td class="text-center">{{ad["buildingSize"] | spacedNumber | size}}</td>
+                <td class="text-center">{{ad["landSize"] | spacedNumber | landSize:ad}}</td>
+                <td>{{ad["id"]}}</td>
             </tr>
         </tbody>
     </table>
