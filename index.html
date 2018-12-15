@@ -20,6 +20,26 @@
     
 <body ng-app="hurtownie" ng-controller="mainCtrl as mainC" ng-cloak>
 
+	<div id="busyOverlay" style="
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left:0;
+		right: 0;
+		background: rgba(0, 0, 0, 0.9);
+		z-index: 10;
+		"
+		ng-if="mainC.isBusy">
+		<div style="
+				position: relative;
+				top: 35%;
+				width: 20%;
+				vertical-align: middle;
+				margin: auto;
+			"
+			ng-include="'loading-icon.html'"></div>
+	</div>
+
 	<!-- NAVBAR MENU -->   
     <nav class="navbar navbar-expand-lg ">
         <div class="container">

@@ -73,11 +73,10 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 	};
 		
 	c.performEtl = function() {
-		let baseUrl = buildBaseUrl(c.searchParams);
-		console.log(baseUrl);
 	}
 	
 	c.extract = function() {
+		let baseUrl = buildBaseUrl(c.searchParams);
 		c.nextStep = 't';
 	}
 	
@@ -106,7 +105,9 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 			urlParams.push('search%5Bfilter_float_m%3Afrom%5D=' + c.searchParams.areaMin);
 		if(c.searchParams.areaMax !== null)
 			urlParams.push('search%5Bfilter_float_m%3Ato%5D=' + c.searchParams.areaMax);
-		url += urlParams.join('&') + '&search%5Bdescription%5D=1';
+		url += urlParams.join('&')
+			+ '&search%5Bdescription%5D=1'
+			+ '&nrAdsPerPage=72#';
 		return url;
 	}
 });
