@@ -41,7 +41,7 @@ let regions = [
 	'zachodniopomorskie',
 ];
 
-let maxNrOfAdds = 72;
+let maxNrOfAdds = 216;
 let defaultAddsPerPage = 72;
 
 let hurtownie = angular.module('hurtownie', []);
