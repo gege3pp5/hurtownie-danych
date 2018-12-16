@@ -183,8 +183,6 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		region: allRegionsName,
 	};
 		
-	
-	
 	c.extract = function() {
 		let baseUrl = c.buildBaseUrl(c.searchParams);
 		mainC.isBusy = true;
@@ -318,11 +316,21 @@ hurtownie.controller("dbCtrl", function($scope, $http) {
 	let c = this;	
 	let mainC = $scope.mainC;
 	
+	c.searchParams = {
+		id: null,
+		buildingType: 'dom',
+		contractType: 'wynajem',
+		priceMin: null,
+		priceMax: null,
+		areaMin: null,
+		areaMax: null
+	};
+	
 	c.ads = null;
 	
 	c.getAds = function() {
 		mainC.isBusy = true;
-		$http.get('getAds.php').then(
+		$http.post('getAds.php', c.searchParams).then(
 			(response) => {
 				c.ads = response.data || [];
 				mainC.isBusy = false;
