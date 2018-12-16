@@ -1,0 +1,27 @@
+<div id="table">
+    <p> Pobrano głoszeń: {{c.ads.length}}</p>
+    <table class="table table-hover ogloszenie" > 
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tytuł</th>
+                <th scope="col">Cena</th>
+                <th scope="col">Liczba pokoi</th>
+                <th scope="col">Metraż</th>
+                <th scope="col">Działka</th>
+                <th scope="col">ID</th>
+            </tr>
+        </thead>
+        <tbody ng-repeat="ad in c.ads">
+            <tr>
+                <th>{{$index + 1}}</th>
+                <td>{{ad["Name"]}}</td>
+                <td class="text-center">{{ad["Price"] | spacedNumber | adPrice:ad}}</td>
+                <td class="text-center">{{ad["NrOfRooms"] | nrOfRooms}}</td>
+                <td class="text-center">{{ad["Size"] | spacedNumber | size}}</td>
+                <td class="text-center">{{ad["LandSize"] | spacedNumber | landSize:ad}}</td>
+                <td>{{ad["Id"]}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

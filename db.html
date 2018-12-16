@@ -83,8 +83,10 @@
                     <option value="16">zachodniopomorskie</option>
                 </select>
             </div>
-                <div class="text-center"><button class="btn" type="submit"><i class="fa fa-search"></i>Wyszukaj</button></div>
+            <div  id="db-search-button" class="text-center"><button class="btn" type="submit" ng-click="c.getAds()"><i class="fa fa-search"></i>Wyszukaj</button></div>
             </form>
         </div>
     </div>
-</div> 
+</div>
+<ng-include src="'resultsTable.html'" ng-show="c.ads != null">
+</ng-include>

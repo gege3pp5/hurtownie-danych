@@ -2,8 +2,8 @@
 
 class Database {
 	public function __construct() {
-		$this->conn = new mysqli("localhost", "resource_transgk",
-							"y34af7UHq5", "resource_transgk");
+		$this->conn = new mysqli("localhost", "root",
+							"", "hurtownieDB");
 		if ($this->conn->connect_error)
 			die("Connection failed: ");
 		$this->conn->set_charset("utf8");

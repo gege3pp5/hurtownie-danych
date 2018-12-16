@@ -60,30 +60,5 @@
         <button id="l-btn" class="btn" ng-click="c.load()" type="submit" ng-disabled="c.nextStep != 'l'"><i class="fa fa-database"></i>L</button>
     </div>
 </div>
-<div ng-show="c.nextStep != 'e'" id="table">
-    <p> Pobrano głoszeń: {{c.adds.length}}</p>
-    <table class="table table-hover ogloszenie" > 
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Tytuł</th>
-                <th scope="col">Cena</th>
-                <th scope="col">Liczba pokoi</th>
-                <th scope="col">Metraż</th>
-                <th scope="col">Działka</th>
-                <th scope="col">ID</th>
-            </tr>
-        </thead>
-        <tbody ng-repeat="ad in c.ads">
-            <tr>
-                <th>{{$index + 1}}</th>
-                <td>{{ad["name"]}}</td>
-                <td class="text-center">{{ad["price"] | spacedNumber | adPrice:ad}}</td>
-                <td class="text-center">{{ad["nrOfRooms"] | nrOfRooms}}</td>
-                <td class="text-center">{{ad["buildingSize"] | spacedNumber | size}}</td>
-                <td class="text-center">{{ad["landSize"] | spacedNumber | landSize:ad}}</td>
-                <td>{{ad["id"]}}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<ng-include src="'resultsTable.html'" ng-show="c.nextStep != 'e'">
+</ng-include>

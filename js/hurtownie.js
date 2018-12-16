@@ -95,7 +95,7 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 	
 	mainC.regions = regions;
 
-	mainC.activePage = 'etl';
+	mainC.activePage = 'home';
 	
 	mainC.navigate = function(pageName) {
 		mainC.activePage = pageName;
@@ -151,10 +151,6 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 							if(urls.length > 0)
 								extractNextPage();
 							else {
-								ads.forEach(ad => {
-									ad.contractType = c.searchParams.contractType;
-									ad.buildingType = c.searchParams.buildingType;
-								});
 								c.ads = ads;
 								c.nextStep = 't';
 								mainC.isBusy = false;
@@ -183,9 +179,9 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 	
 	c.load = function() {
 		mainC.isBusy = true;
-		$http.post('load.php', c.adds).then(
+		$http.post('load.php', c.ads).then(
 			(response) => {
-				console.log(response);
+				c.nextStep = 'e';
 			},
 			(failReason) => {
 				console.log(failReason);
@@ -221,15 +217,17 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		page.find('.listing-title:not(.listing-title-promoted) ~ .offer-item').each(function() {
 			let jqueryAd = $(this);
 			let ad = {};
-			ad["name"] = jqueryAd.find(".offer-item-title").text();
+			ad["Name"] = jqueryAd.find(".offer-item-title").text();
 			let priceStr = jqueryAd.find(".offer-item-price").text().trim();
-			ad["price"] = parseFloat((priceStr.replace(',', '.').match(/[\s0-9\.]*/) || [''])[0].replace(/\s+/g, '')) || null;
+			ad["Price"] = parseFloat((priceStr.replace(',', '.').match(/[\s0-9\.]*/) || [''])[0].replace(/\s+/g, '')) || null;
 			let nrOfRoomsStr = jqueryAd.find(".offer-item-rooms").text().split(' ')[0];
-			ad["nrOfRooms"] = nrOfRoomsStr == ">10" ? 11 : (parseInt(nrOfRoomsStr) || null);
+			ad["NrOfRooms"] = nrOfRoomsStr == ">10" ? 11 : (parseInt(nrOfRoomsStr) || null);
 			let sizeStr = jqueryAd.find(".offer-item-area").text();
-			ad["buildingSize"] = parseFloat((sizeStr.replace(',', '.').match(/[\s0-9\.]*/) || [''])[0].replace(/\s+/g, '')) || null;
-			ad["landSize"] = parseFloat((sizeStr.replace(',', '.').match(/.*m²działka([\s0-9\.]*)/) || ['', ''])[1].replace(/\s+/g, '')) || null;			
-            ad["id"] = jqueryAd.find(".button-observed").attr("data-id");
+			ad["Size"] = parseFloat((sizeStr.replace(',', '.').match(/[\s0-9\.]*/) || [''])[0].replace(/\s+/g, '')) || null;
+			ad["LandSize"] = parseFloat((sizeStr.replace(',', '.').match(/.*m²działka([\s0-9\.]*)/) || ['', ''])[1].replace(/\s+/g, '')) || null;			
+            ad["Id"] = jqueryAd.find(".button-observed").attr("data-id");
+			ad["ContractType"] = c.searchParams.contractType;
+			ad["BuildingType"] = c.searchParams.buildingType;
 			adsList.push(ad);
 		});
 	}
@@ -237,4 +235,24 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 
 hurtownie.controller("dbCtrl", function($scope, $http) {
 	let c = this;
+	let mainC = $scope.mainC;
+	
+	c.ads = null;
+	
+	c.getAds = function() {
+		mainC.isBusy = true;
+		$http.get('getAds.php').then(
+			(response) => {
+				c.ads = response.data || [];
+				mainC.isBusy = false;
+				$('html, body').animate({
+					scrollTop: $('#db-search-button').offset().top
+				}, 500);
+			},
+			(failReason) => {
+				console.log(failReason);
+				mainC.isBusy = false;
+			}
+		);
+	}
 });
