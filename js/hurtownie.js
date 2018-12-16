@@ -116,7 +116,7 @@ hurtownie.controller("mainCtrl", function($scope, $http, $timeout) {
 		};
 		
 		infoTimeoutPrms = $timeout(() => {
-			info = null;
+			info.message = null;
 		}, timeout);
 	}
 	
