@@ -68,6 +68,36 @@
             </div>
         </div>
     </nav>
+	
+	<div id="infoContainer" style="
+		position: relative;
+		top: 1em;
+		left: 10%;
+		text-align: center;
+		width: 80%;
+		opacity: 0.95;
+		padding: {{mainC.getInfo().message !== null ? '0.8em 0 0.8em 0' : '0'}};
+		overflow: hidden;
+		transition: all 0.4s linear;
+		height: {{mainC.getInfo().message !== null ? '3em' : '0'}};
+		background: {{mainC.getInfo().status === 'good' ? '#8d8' : '#ffaaaa'}};
+		color: {{mainC.getInfo().status === 'good' ? '#005500' : '#550000'}};
+		border: {{mainC.getInfo().message !== null ? '1px solid' : '0px solid'}};
+		border-color: {{mainC.getInfo().status === 'good' ? '#00aa00' : '#aa0000'}};
+	">
+		<div style="
+			width: 90%;
+			margin: 0 5% 0 5%;
+		">{{mainC.getInfo().message}}</div>
+		<div style="
+			position: absolute;
+			font-size: 1.5em;
+			right: 3%;
+			top: 0;
+			font-weight: bold;
+			cursor: pointer;
+		" ng-click="mainC.closeInfo()">&times;</div>
+	</div>
     
 	<main id="main">
 		<div ng-show="mainC.activePage == 'home'"

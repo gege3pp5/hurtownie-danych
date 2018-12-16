@@ -90,17 +90,43 @@ hurtownie.filter('landSize', function() {
 	}
 });
 
-hurtownie.controller("mainCtrl", function($scope, $http) {
+hurtownie.controller("mainCtrl", function($scope, $http, $timeout) {
 	let mainC = this;
 	
 	mainC.regions = regions;
 	mainC.dbExists = null;
 	mainC.activePage = 'home';
+	let info = {
+		message: null,
+		status: 'good'
+	};
+	let infoTimeoutPrms = null;
 	
 	mainC.navigate = function(pageName) {
 		if(mainC.dbExists) {
 			mainC.activePage = pageName;
 		}		
+	}
+	
+	mainC.setInfo = function(message, status, timeout = 5000) {
+		$timeout.cancel(infoTimeoutPrms);
+		info = {
+			message: message,
+			status: status
+		};
+		
+		infoTimeoutPrms = $timeout(() => {
+			info = null;
+		}, timeout);
+	}
+	
+	mainC.getInfo = function() {
+		return info;
+	}
+	
+	mainC.closeInfo = function() {
+		$timeout.cancel(infoTimeoutPrms);
+		info.message = null;
 	}
 });
 
@@ -109,6 +135,7 @@ hurtownie.controller("homeCtrl", function($scope, $http) {
 	let mainC = $scope.mainC;
 	
 	mainC.isBusy = true;
+	
 	$http.get('ifDbExists.php').then(
 		(response) => {
 			mainC.dbExists = (response.data === 'true');
@@ -125,8 +152,10 @@ hurtownie.controller("homeCtrl", function($scope, $http) {
 		$http.get('config/createDB.php').then(
 			(response) => {
 				mainC.dbExists = true;
+				mainC.setInfo('Pomyślnie utworzono bazę "hurtownieDB"', 'good');
 			},
 			(failReason) => {
+				mainC.setInfo('Nie udało się utworzyć bazy', 'bad');
 				console.log(failReason);			
 			}
 		).finally(() => {
@@ -222,15 +251,17 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		mainC.isBusy = true;
 		$http.post('load.php', c.ads).then(
 			(response) => {
+				mainC.setInfo("Pomyślnie zapisano " + c.ads.length + " ogłoszeń", 'good');
+				c.ads = [];
 				c.nextStep = 'e';
 			},
 			(failReason) => {
+				mainC.setInfo("Nie udało się zapidać ogłoszeń", 'bad');
 				console.log(failReason);
 			}
 		).finally(() => {
 			mainC.isBusy = false;
 		});
-		alert("Rekordy zostaly zaldowane do bazy");
 	}
 
 
