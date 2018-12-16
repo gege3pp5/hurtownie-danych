@@ -12,7 +12,7 @@ function createDB() {
 		die("Coś poszło nie tak: " . $conn->connect_error);
 	} 
 
-	$sql = 'CREATE DATABASE IF NOT EXISTS ' . $dbName;
+	$sql = 'CREATE DATABASE IF NOT EXISTS ' . $dbName . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
 	if ($conn->query($sql) !== TRUE) {
 		$msg = 'Coś poszło nie tak: ' . $conn->error;
 		$conn->close();
