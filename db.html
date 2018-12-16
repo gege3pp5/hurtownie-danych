@@ -1,11 +1,15 @@
 <div id="baza-danych" class="baza" >
     <div class="row">
         <div class="col-sm-6 text-center">Eksport danych do pliku .csv
-			<a href="getCSV.php" download="ogloszenia.csv" class="btn">
+			<a href="getCSV.php" download="ogloszenia.csv" class="btn" style="color: white;">
 				<i class="fa fa-file-excel-o"></i>Pobierz plik .csv
 			</a>
 		</div>    
-        <div col="col-sm-6 text-center">Wyczyszczenie bazy danych <button class="btn" type="submit"><i class="fa fa-trash"></i>Wyczyść BD</button></div>
+        <div col="col-sm-6 text-center">Wyczyszczenie bazy danych
+			<button class="btn" type="submit" ng-click="c.clearDB()">
+				<i class="fa fa-trash"></i>Wyczyść DB
+			</button>
+		</div>
     </div>
     <div class="form">
         <div class="radio">  

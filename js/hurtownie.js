@@ -346,13 +346,33 @@ hurtownie.controller("dbCtrl", function($scope, $http) {
 	}
 	
 	c.getCSV = function() {
+		mainC.isBusy = true;
 		$http.get('getCSV.php').then(
 			(response) => {
-				console.log(response.data);
+
 			},
 			(failReason) => {
 				console.log(failReason);
 			}
-		);
+		).finally(() => {
+			mainC.isBusy = false;
+		});
+	}
+	
+	c.clearDB = function() {
+		console.log('fd');
+		mainC.isBusy = true;
+		$http.get('clearDB.php').then(
+			(response) => {
+				c.ads = null;
+				mainC.setInfo("Usunięto wszystkie ogłoszenia z bazy", 'good');
+			},
+			(failReason) => {
+				mainC.setInfo("Nie udało się usunąć ogłoszeń", 'bad');
+				console.log(failReason);
+			}
+		).finally(() => {
+			mainC.isBusy = false;
+		});
 	}
 });
