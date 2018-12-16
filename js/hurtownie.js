@@ -201,7 +201,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		).finally(() => {
 			mainC.isBusy = false;
 		});
-		console.log("Load Phase Completed!")
+		alert("Rekordy zostaly zaldowane do bazy");
 	}
 
 
