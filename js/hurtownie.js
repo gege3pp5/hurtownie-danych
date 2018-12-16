@@ -109,6 +109,7 @@ hurtownie.controller("homeCtrl", function($scope, $http) {
 hurtownie.controller("etlCtrl", function($scope, $http) {
 	let c = this;
 	let mainC = $scope.mainC;
+	let transformStatus = false;
 
 	c.nextStep = 'e';
 
@@ -124,8 +125,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		region: allRegionsName,
 	};
 		
-	c.performEtl = function() {
-	}
+	
 	
 	c.extract = function() {
 		let baseUrl = c.buildBaseUrl(c.searchParams);
@@ -181,7 +181,12 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 	}
 	
 	c.transform = function() {
-		c.nextStep = 'l'
+		c.nextStep = 'l';
+		transformStatus = true;
+	}
+	c.transformETL = function() {
+		c.nextStep = 'l';
+		c.load();
 	}
 	
 	c.load = function() {
@@ -196,6 +201,15 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		).finally(() => {
 			mainC.isBusy = false;
 		});
+		console.log("Load Phase Completed!")
+	}
+
+
+	c.performEtl = function() {
+		c.extract();
+		setTimeout(function(){
+		c.transformETL();
+		}, 2000);
 	}
 	
 	c.buildBaseUrl = function(searchParams) {
