@@ -241,7 +241,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 });
 
 hurtownie.controller("dbCtrl", function($scope, $http) {
-	let c = this;
+	let c = this;	
 	let mainC = $scope.mainC;
 	
 	c.ads = null;
@@ -259,6 +259,17 @@ hurtownie.controller("dbCtrl", function($scope, $http) {
 			(failReason) => {
 				console.log(failReason);
 				mainC.isBusy = false;
+			}
+		);
+	}
+	
+	c.getCSV = function() {
+		$http.get('getCSV.php').then(
+			(response) => {
+				console.log(response.data);
+			},
+			(failReason) => {
+				console.log(failReason);
 			}
 		);
 	}
