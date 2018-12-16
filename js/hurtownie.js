@@ -164,10 +164,9 @@ hurtownie.controller("homeCtrl", function($scope, $http) {
 	}
 });
 
-hurtownie.controller("etlCtrl", function($scope, $http) {
+hurtownie.controller("etlCtrl", function($scope, $http, $q) {
 	let c = this;
 	let mainC = $scope.mainC;
-	let transformStatus = false;
 
 	c.nextStep = 'e';
 
@@ -184,6 +183,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 	};
 		
 	c.extract = function() {
+		let deferred = $q.defer();
 		let baseUrl = c.buildBaseUrl(c.searchParams);
 		mainC.isBusy = true;
 		$http.get('pobierzOgloszenia.php?url=' + encodeURIComponent(baseUrl + '&nrAdsPerPage=24')).then(
@@ -203,6 +203,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 				let ads = [];
 				
 				if(urls.length === 0) {
+					deferred.resolve(null);
 					mainC.isBusy = false;
 					return;
 				}
@@ -217,6 +218,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 								c.ads = ads;
 								c.nextStep = 't';
 								mainC.isBusy = false;
+								deferred.resolve(null);
 								$('html, body').animate({
 									scrollTop: $('#etl-buttons').offset().top
 								}, 500);
@@ -225,6 +227,7 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 						(failReason) => {
 							console.log(failReason);
 							mainC.isBusy = false;
+							deferred.reject(failReason);
 						}
 					);
 				})();
@@ -232,24 +235,22 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 			(failReason) => {
 				console.log(failReason);
 				mainC.isBusy = false;
+				deferred.reject(failReason);
 			}
-		);		
+		);
+		return deferred.promise;		
 	}
 	
 	c.transform = function() {
 		c.nextStep = 'l';
-		transformStatus = true;
-	}
-	c.transformETL = function() {
-		c.nextStep = 'l';
-		c.load();
 	}
 	
 	c.load = function() {
 		mainC.isBusy = true;
 		$http.post('load.php', c.ads).then(
 			(response) => {
-				mainC.setInfo("Pomyślnie zapisano " + c.ads.length + " ogłoszeń", 'good');
+				let affRows = response.data;
+				mainC.setInfo("Pomyślnie zapisano " + affRows + " ogłoszeń. Zignorowano " + (c.ads.length - affRows) + " duplikatów", 'good');
 				c.ads = [];
 				c.nextStep = 'e';
 			},
@@ -264,10 +265,16 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 
 
 	c.performEtl = function() {
-		c.extract();
-		setTimeout(function(){
-		c.transformETL();
-		}, 2000);
+		c.extract().then(
+			() => {
+				mainC.isBusy = true;
+				c.transform();
+				c.load();
+			},
+			(failReason) => {
+				
+			}
+		);
 	}
 	
 	c.buildBaseUrl = function(searchParams) {

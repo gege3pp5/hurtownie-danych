@@ -21,9 +21,11 @@ class Database {
 	public function execute_prepared_statement($query, $arguments) {
 		$stmt = $this->prepare_statement($query, $arguments);
 		$success = $stmt->execute();
+		$affectedRows = $stmt->affected_rows;
 		$stmt->close();
 		if(!$success)
 			exit("Cos poszlo nie tak");
+		return $affectedRows;
 	}
 	public function fetch_prepared_statement($query, $arguments, &$results) {
 		$stmt = $this->prepare_statement($query, $arguments);
