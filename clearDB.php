@@ -1,13 +1,12 @@
 <?php
 
+mysqli_report(MYSQLI_REPORT_ALL);
 require('Database.php');
 
 function clearDB() {
-	$ads = [];
-	$db = new Database();	
-	
-	$sql = 'REMOVE FROM ads';		
-	$dataset = $db->execute_statement($sql);
+	$db = new Database();		
+	$sql = 'DELETE FROM ads';		
+	$db->execute_statement($sql);
 }
 
 clearDB();

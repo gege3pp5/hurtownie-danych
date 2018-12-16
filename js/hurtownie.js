@@ -367,7 +367,6 @@ hurtownie.controller("dbCtrl", function($scope, $http) {
 	}
 	
 	c.clearDB = function() {
-		console.log('fd');
 		mainC.isBusy = true;
 		$http.get('clearDB.php').then(
 			(response) => {
