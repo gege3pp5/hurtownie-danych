@@ -133,7 +133,10 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 		$http.get('pobierzOgloszenia.php?url=' + encodeURIComponent(baseUrl + '&nrAdsPerPage=24')).then(
 			(response) => {
 				let html = $($.parseHTML(response.data));
-				let totalNrOfAdds = parseInt(html.find('.offers-index strong')[0].innerText.replace(/\s+/g, ''));
+				let totalNrOfAddsElem = html.find('.offers-index strong')[0];
+				let totalNrOfAdds = totalNrOfAddsElem
+					? parseInt(totalNrOfAddsElem.innerText.replace(/\s+/g, ''))
+					: 0;
 				let nrOfAddsToDownload = Math.min(totalNrOfAdds, maxNrOfAdds);
 				let nrOfPages = Math.ceil(nrOfAddsToDownload / defaultAddsPerPage);
 				let urls = (new Array(nrOfPages).fill(undefined)).map((val, index) => {
@@ -143,6 +146,10 @@ hurtownie.controller("etlCtrl", function($scope, $http) {
 				
 				let ads = [];
 				
+				if(urls.length === 0) {
+					mainC.isBusy = false;
+					return;
+				}
 				(function extractNextPage() {
 					$http.get('pobierzOgloszenia.php?url=' + urls.pop()).then(
 						(reponse) => {
