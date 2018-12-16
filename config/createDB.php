@@ -12,7 +12,7 @@ function createDB() {
 		die("Coś poszło nie tak: " . $conn->connect_error);
 	} 
 
-	$sql = 'CREATE DATABASE ' . $dbName;
+	$sql = 'CREATE DATABASE IF NOT EXISTS ' . $dbName;
 	if ($conn->query($sql) !== TRUE) {
 		$msg = 'Coś poszło nie tak: ' . $conn->error;
 		$conn->close();
@@ -26,7 +26,7 @@ function createDB() {
 		die("Coś poszło nie tak: " . $conn->connect_error);
 	} 
 	
-	$sql = 'CREATE TABLE ads(
+	$sql = 'CREATE TABLE IF NOT EXISTS ads(
 				Id BIGINT(20) PRIMARY KEY,
 				Name CHAR(255),
 				Price DOUBLE,
