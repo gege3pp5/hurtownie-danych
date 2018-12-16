@@ -59,10 +59,10 @@
                         <a class="nav-link" href="#">Home</a>
                     </li>
                     <li id="menu-etl" class="nav-item" ng-class="{active: mainC.activePage == 'etl'}" ng-click="mainC.navigate('etl')">
-                        <a class="nav-link" href="#">Proces ETL</a>
+                        <a class="nav-link" ng-class="{disabled: ! mainC.dbExists}" href="#">Proces ETL</a>
                     </li>
                     <li id="menu-bd" class="nav-item" ng-class="{active: mainC.activePage == 'db'}" ng-click="mainC.navigate('db')">
-                        <a class="nav-link" href="#">Operacje na bazie danych</a>
+                        <a class="nav-link" ng-class="{disabled: ! mainC.dbExists}" href="#">Operacje na bazie danych</a>
                     </li>
                 </ul>
             </div>

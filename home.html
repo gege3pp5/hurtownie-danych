@@ -1,5 +1,8 @@
 <div class="container">
 		<div class="home" id="home">
+			<p ng-show="mainC.dbExists === false" style="color: red; font-weight: bold;">Do działnia aplikacji konieczna jest baza danych "hurtownieDB". Kliknij
+				<span ng-click="c.createDB()" style="text-decoration: none; color: #1F9403; cursor: pointer;">tutaj</span>
+			aby ją utworzyć</p>
 			<h1>Projekt zrobiony w ramach przedmiotu Hurtownie danych</h1>
         		<p>Aplikacja pozwalająca przeszukać stronę internetową <a href='https://otodom.pl'>otodom.pl</a> według wybranych kryteriów, zbierać dane do bazy danych, przetwarzać je za pomocą procesu ETL oraz prowadzić różne operacji na bazie danych. <br> 
            			<a href='dokumentacja.doc'>Dokumentacja techniczna oraz instrukcja obsługi</a></p>

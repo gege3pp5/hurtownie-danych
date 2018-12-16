@@ -94,16 +94,45 @@ hurtownie.controller("mainCtrl", function($scope, $http) {
 	let mainC = this;
 	
 	mainC.regions = regions;
-
+	mainC.dbExists = null;
 	mainC.activePage = 'home';
 	
 	mainC.navigate = function(pageName) {
-		mainC.activePage = pageName;
+		if(mainC.dbExists) {
+			mainC.activePage = pageName;
+		}		
 	}
 });
 
 hurtownie.controller("homeCtrl", function($scope, $http) {
 	let c = this;
+	let mainC = $scope.mainC;
+	
+	mainC.isBusy = true;
+	$http.get('ifDbExists.php').then(
+		(response) => {
+			mainC.dbExists = (response.data === 'true');
+		},
+		(failReason) => {
+			console.log(failReason);			
+		}
+	).finally(() => {
+		mainC.isBusy = false;
+	});
+	
+	c.createDB = function() {
+		mainC.isBusy = true;
+		$http.get('config/createDB.php').then(
+			(response) => {
+				mainC.dbExists = true;
+			},
+			(failReason) => {
+				console.log(failReason);			
+			}
+		).finally(() => {
+			mainC.isBusy = false;
+		});
+	}
 });
 
 hurtownie.controller("etlCtrl", function($scope, $http) {

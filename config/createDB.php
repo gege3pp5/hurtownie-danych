@@ -1,7 +1,5 @@
 <?php
 
-require('../Database.php');
-
 function createDB() {
 	$servername = 'localhost';
 	$username = 'root';
